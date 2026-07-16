@@ -83,6 +83,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Painel em tempo real dos squads de agentes de IA da Agência Izzy." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "opensquad Dashboard — Agência Izzy" },
+      { name: "twitter:description", content: "Painel em tempo real dos squads de agentes de IA da Agência Izzy." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c492c254-3198-461f-b65e-0d62db9f8461/id-preview-dcd7b8d4--d55c7755-687d-440b-ac95-6ed4838dfd21.lovable.app-1784171383426.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c492c254-3198-461f-b65e-0d62db9f8461/id-preview-dcd7b8d4--d55c7755-687d-440b-ac95-6ed4838dfd21.lovable.app-1784171383426.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
