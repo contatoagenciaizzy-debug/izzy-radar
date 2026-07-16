@@ -1,10 +1,18 @@
 import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import { OfficeSceneV2 } from './OfficeSceneV2';
-import type { AgentV2 } from './AgentSpriteV2';
+import { OfficeScene } from './OfficeScene';
+import type { Agent, SquadState } from '@/types/state';
+
+interface SupabaseAgent {
+  id: string;
+  name: string;
+  icon: string;
+  status: string;
+  detail?: string | null;
+}
 
 interface PhaserOfficeProps {
-  agents: AgentV2[];
+  agents: SupabaseAgent[];
   onAgentClick?: (agentId: string) => void;
 }
 
@@ -27,17 +35,17 @@ export function PhaserOffice({ agents, onAgentClick }: PhaserOfficeProps) {
       width: w,
       height: h,
       pixelArt: false,
-      antialias: true,
+      antialias: false,
       roundPixels: true,
-      backgroundColor: '#0c0a14',
-      scene: [OfficeSceneV2],
+      backgroundColor: '#1a1420',
+      scene: [OfficeScene],
       scale: { mode: Phaser.Scale.NONE },
     });
 
     gameRef.current = game;
 
     game.events.once('ready', () => {
-      const scene = game.scene.getScene('OfficeSceneV2') as OfficeSceneV2 | null;
+      const scene = game.scene.getScene('OfficeScene') as OfficeScene | null;
       scene?.events.on('agentClicked', (agentId: string) => {
         onAgentClickRef.current?.(agentId);
       });
@@ -61,9 +69,32 @@ export function PhaserOffice({ agents, onAgentClick }: PhaserOfficeProps) {
   useEffect(() => {
     const game = gameRef.current;
     if (!game) return;
-    const scene = game.scene.getScene('OfficeSceneV2') as OfficeSceneV2 | null;
+    const scene = game.scene.getScene('OfficeScene') as OfficeScene | null;
     if (!scene || !scene.scene.isActive()) return;
-    scene.events.emit('agentsUpdate', agents);
+
+    // Bridge Supabase rows into the SquadState shape the original scene expects.
+    // desk is fixed at {1,1} for every agent — OfficeScene auto-grids agents that
+    // all share the same desk position (see renderScene's allSameDesk fallback).
+    const mapped: Agent[] = agents.map((a) => ({
+      id: a.id,
+      name: a.name,
+      icon: a.icon,
+      status: (a.status as Agent['status']) ?? 'idle',
+      desk: { col: 1, row: 1 },
+      detail: a.detail ?? '',
+    }));
+
+    const state: SquadState | null = agents.length > 0 ? {
+      squad: 'izzy',
+      status: 'running',
+      step: { current: 0, total: 0, label: '' },
+      agents: mapped,
+      handoff: null,
+      startedAt: null,
+      updatedAt: new Date().toISOString(),
+    } : null;
+
+    scene.events.emit('stateUpdate', state);
   }, [agents]);
 
   return (
