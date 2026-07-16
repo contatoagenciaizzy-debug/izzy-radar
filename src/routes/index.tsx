@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { PhaserOffice } from "@/office/PhaserOffice";
 
 export const Route = createFileRoute("/")({
   component: Dashboard,
@@ -209,14 +210,14 @@ function Dashboard() {
             </div>
           )}
 
-          {/* Scene placeholder */}
-          <div className="h-[420px] rounded-lg border border-dashed border-border bg-panel flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-4xl mb-3">🏢</div>
-              <div className="text-sm font-medium">Cena do escritório — em desenvolvimento</div>
-              <div className="text-xs text-muted-foreground mt-1">A visualização pixel art (Phaser) entra aqui.</div>
-            </div>
-          </div>
+          {/* Office scene — animated pixel art */}
+          <PhaserOffice
+            agents={agents.map((a) => ({ id: a.id, name: a.name, icon: a.icon, status: a.status, detail: a.detail }))}
+            onAgentClick={(agentId) => {
+              const found = agents.find((a) => a.id === agentId);
+              setSelectedAgent((prev) => (prev?.id === agentId ? null : found ?? prev));
+            }}
+          />
 
           {/* Agents list */}
           <div className="mt-6">
