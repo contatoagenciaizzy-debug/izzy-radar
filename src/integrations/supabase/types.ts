@@ -14,7 +14,129 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_log: {
+        Row: {
+          id: string
+          kind: string
+          message: string
+          squad_id: string
+          time: string
+        }
+        Insert: {
+          id?: string
+          kind?: string
+          message: string
+          squad_id: string
+          time?: string
+        }
+        Update: {
+          id?: string
+          kind?: string
+          message?: string
+          squad_id?: string
+          time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_log_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "squads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agents: {
+        Row: {
+          detail: string | null
+          icon: string
+          id: string
+          name: string
+          squad_id: string
+          status: string
+        }
+        Insert: {
+          detail?: string | null
+          icon?: string
+          id: string
+          name: string
+          squad_id: string
+          status?: string
+        }
+        Update: {
+          detail?: string | null
+          icon?: string
+          id?: string
+          name?: string
+          squad_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agents_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "squads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      squad_states: {
+        Row: {
+          squad_id: string
+          started_at: string | null
+          status: string
+          step_current: number
+          step_label: string
+          step_total: number
+          updated_at: string
+        }
+        Insert: {
+          squad_id: string
+          started_at?: string | null
+          status?: string
+          step_current?: number
+          step_label?: string
+          step_total?: number
+          updated_at?: string
+        }
+        Update: {
+          squad_id?: string
+          started_at?: string | null
+          status?: string
+          step_current?: number
+          step_label?: string
+          step_total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "squad_states_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: true
+            referencedRelation: "squads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      squads: {
+        Row: {
+          icon: string
+          id: string
+          name: string
+        }
+        Insert: {
+          icon?: string
+          id: string
+          name: string
+        }
+        Update: {
+          icon?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
